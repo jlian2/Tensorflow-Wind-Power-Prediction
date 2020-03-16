@@ -56,24 +56,21 @@ miny=y_test.min();
 print(X_train.shape, y_train.shape, X_test.shape, y_test.shape)
 
 inputs = Input(shape=(TIME_STEPS, INPUT_DIM))
-#drop1 = Dropout(0.3)(inputs)
 
-x = Conv1D(filters = 64, kernel_size = 1, activation = 'relu')(inputs)  #, padding = 'same'
-#x = Conv1D(filters=128, kernel_size=5, activation='relu')(output1)#embedded_sequences
+x = Conv1D(filters = 32, kernel_size = 1, activation = 'relu')(inputs)  #, padding = 'same'
 x = MaxPooling1D(pool_size = 5)(x)
-x = Dropout(0.2)(x)
+x = Dropout(0.1)(x)
 
 lstm_out = Bidirectional(LSTM(lstm_units, activation='relu'), name='bilstm')(x)
 
 output = Dense(1, activation='sigmoid')(lstm_out)
-#output = Dense(10, activation='sigmoid')(drop2)
 
 model = Model(inputs=inputs, outputs=output)
 
 model.compile(loss='mean_squared_error', optimizer='adam')
 model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, shuffle=False)
-model.save('0521.h5')
-model=load_model('0521.h5')
+model.save('model.h5')
+#model=load_model('model.h5')
 
 
 y_pred = model.predict(X_test)
@@ -89,12 +86,12 @@ y_raw=np.hstack((y_train,y_test))
 #RMSE
 print('MSE Train loss:', model.evaluate(X_train, y_train, batch_size=batch_size))
 print('MSE Test loss:', model.evaluate(X_test, y_test, batch_size=batch_size))
-Rmse = sqrt(mean_squared_error(y_test, 57.5*y_pred))
+Rmse = sqrt(mean_squared_error(y_test, y_pred))
 print('RMSE: ', Rmse)
 
 
 plt.plot(np.arange(len(y_raw)), np.hstack((y_train,y_test)) , 'b', label="Raw Data")
-plt.plot(np.arange(len(y_train),len(y_raw)),57.5*y_pred,'r', label="Prediction")
+plt.plot(np.arange(len(y_train),len(y_raw)),y_pred,'r', label="Prediction")
 plt.legend()
 plt.show()
 
