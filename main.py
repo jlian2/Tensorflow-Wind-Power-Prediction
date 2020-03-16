@@ -16,7 +16,7 @@ from keras.optimizers import Adam
 from keras.models import load_model
 
 
-df_data_5minute=pd.read_csv('data2.csv')
+df_data_5minute=pd.read_csv('raw_data.csv')
 df_data_5minute.drop('Unnamed: 0', axis=1, inplace=True)
 
 df=df_data_5minute
